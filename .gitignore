@@ -3,8 +3,11 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-appsettings.json
 .vscode
+appsettings.json
+ReactECommerceStore.Api/store.db
+ReactECommerceStore.Api/store.db-shm
+ReactECommerceStore.Api/store.db-wal
 
 # User-specific files
 *.rsuser
