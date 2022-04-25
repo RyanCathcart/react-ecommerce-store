@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,32 +19,17 @@ public class BasketController : BaseApiController
         _context = context;
     }
 
-    [HttpGet]
+    [HttpGet(Name = "GetBasket")]
     public async Task<ActionResult<BasketDto>> GetBasket()
     {
         var basket = await RetrieveBasket();
 
         if (basket == null) return NotFound();
-
-        return new BasketDto
-        {
-            Id = basket.Id,
-            BuyerId = basket.BuyerId,
-            Items = basket.Items.Select(item => new BasketItemDto
-            {
-                ProductId = item.ProductId,
-                Name = item.Product.Name,
-                Price = item.Product.Price,
-                PictureUrl = item.Product.PictureUrl,
-                Type = item.Product.Type,
-                Brand = item.Product.Brand,
-                Quantity = item.Quantity
-            }).ToList()
-        };
+        return MapBascketToDto(basket);
     }
 
-    [HttpPost] // example: api/basket?productId=3&quantity=2
-    public async Task<ActionResult> AddItemToBasket(int productId, int quantity)
+    [HttpPost]
+    public async Task<ActionResult<BasketDto>> AddItemToBasket(int productId, int quantity)
     {
         var basket = await RetrieveBasket();
 
@@ -57,7 +43,7 @@ public class BasketController : BaseApiController
         
         var result = await _context.SaveChangesAsync() > 0;
 
-        if (result) return StatusCode(201);
+        if (result) return CreatedAtRoute("GetBasket", MapBascketToDto(basket));
 
         return BadRequest(new ProblemDetails{Title = "Problem saving item to basket"});
     }
@@ -66,9 +52,18 @@ public class BasketController : BaseApiController
     public async Task<ActionResult> RemoveBasketItem(int productId, int quantity)
     {
         // get basket
+        var basket = await RetrieveBasket();
+
+        if (basket == null) return NotFound();
+
         // remove item or reduce quantity
+        basket.RemoveItem(productId, quantity);
         // save changes
-        return StatusCode(201);
+        var result = await _context.SaveChangesAsync() > 0;
+
+        if (result) return Ok();
+
+        return BadRequest(new ProblemDetails{Title = "Problem removing item from basket"});
     }
 
     private async Task<Basket> RetrieveBasket()
@@ -87,5 +82,24 @@ public class BasketController : BaseApiController
         var basket = new Basket{BuyerId = buyerId};
         _context.Baskets.Add(basket);
         return basket;
+    }
+
+    private BasketDto MapBascketToDto(Basket basket)
+    {
+        return new BasketDto
+        {
+            Id = basket.Id,
+            BuyerId = basket.BuyerId,
+            Items = basket.Items.Select(item => new BasketItemDto
+            {
+                ProductId = item.ProductId,
+                Name = item.Product.Name,
+                Price = item.Product.Price,
+                PictureUrl = item.Product.PictureUrl,
+                Type = item.Product.Type,
+                Brand = item.Product.Brand,
+                Quantity = item.Quantity
+            }).ToList()
+        };
     }
 }
