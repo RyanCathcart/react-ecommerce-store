@@ -38,7 +38,6 @@ axios.interceptors.response.use(
           state: { error: data },
         });
         break;
-
       default:
         break;
     }

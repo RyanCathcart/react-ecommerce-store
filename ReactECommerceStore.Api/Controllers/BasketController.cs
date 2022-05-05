@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +24,7 @@ public class BasketController : BaseApiController
         var basket = await RetrieveBasket();
 
         if (basket == null) return NotFound();
-        return MapBascketToDto(basket);
+        return MapBasketToDto(basket);
     }
 
     [HttpPost]
@@ -43,7 +42,7 @@ public class BasketController : BaseApiController
         
         var result = await _context.SaveChangesAsync() > 0;
 
-        if (result) return CreatedAtRoute("GetBasket", MapBascketToDto(basket));
+        if (result) return CreatedAtRoute("GetBasket", MapBasketToDto(basket));
 
         return BadRequest(new ProblemDetails{Title = "Problem saving item to basket"});
     }
@@ -84,7 +83,7 @@ public class BasketController : BaseApiController
         return basket;
     }
 
-    private BasketDto MapBascketToDto(Basket basket)
+    private BasketDto MapBasketToDto(Basket basket)
     {
         return new BasketDto
         {
