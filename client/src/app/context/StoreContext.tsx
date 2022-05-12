@@ -1,3 +1,5 @@
+// Probably deprecated
+
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { Basket } from "../models/basket";
 
