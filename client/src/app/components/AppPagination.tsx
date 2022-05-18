@@ -11,6 +11,7 @@ export default function AppPagination({
   onPageChange,
 }: AppPaginationProps) {
   const { currentPage, totalCount, totalPages, pageSize } = metaData;
+
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center">
       <Typography>

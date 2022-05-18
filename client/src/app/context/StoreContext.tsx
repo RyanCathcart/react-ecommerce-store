@@ -1,4 +1,4 @@
-// Probably deprecated
+// Probably deprecated; moved on to using Redux for this app.
 
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { Basket } from "../models/basket";
