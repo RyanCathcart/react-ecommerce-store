@@ -59,10 +59,7 @@ export default function AboutPage() {
         >
           Test 500 Error
         </Button>
-        <Button
-          variant="contained"
-          onClick={getValidationError}
-        >
+        <Button variant="contained" onClick={getValidationError}>
           Test Validation Error
         </Button>
       </ButtonGroup>
@@ -70,7 +67,7 @@ export default function AboutPage() {
         <Alert severity="error">
           <AlertTitle>Validation Errors</AlertTitle>
           <List>
-            {validationErrors.map(error => (
+            {validationErrors.map((error) => (
               <ListItem key={error}>
                 <ListItemText>{error}</ListItemText>
               </ListItem>
