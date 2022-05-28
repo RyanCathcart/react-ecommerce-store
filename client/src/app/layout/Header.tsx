@@ -11,7 +11,8 @@ import {
   Typography,
 } from "@mui/material";
 import { Link, NavLink } from "react-router-dom";
-import { useAppSelector } from '../store/configureStore';
+import { useAppSelector } from "../store/configureStore";
+import SignedInMenu from "./SignedInMenu";
 
 interface HeaderProps {
   darkMode: boolean;
@@ -38,7 +39,8 @@ const navStyles = {
 };
 
 export default function Header({ darkMode, handleThemeChange }: HeaderProps) {
-  const { basket } = useAppSelector(state => state.basket);
+  const { basket } = useAppSelector((state) => state.basket);
+  const { user } = useAppSelector((state) => state.account);
 
   const itemCount = basket?.items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -81,13 +83,22 @@ export default function Header({ darkMode, handleThemeChange }: HeaderProps) {
               <ShoppingCart />
             </Badge>
           </IconButton>
-          <List sx={{ display: "flex" }}>
-            {rightLinks.map(({ title, path }) => (
-              <ListItem component={NavLink} to={path} key={path} sx={navStyles}>
-                {title.toUpperCase()}
-              </ListItem>
-            ))}
-          </List>
+          {user ? (
+            <SignedInMenu />
+          ) : (
+            <List sx={{ display: "flex" }}>
+              {rightLinks.map(({ title, path }) => (
+                <ListItem
+                  component={NavLink}
+                  to={path}
+                  key={path}
+                  sx={navStyles}
+                >
+                  {title.toUpperCase()}
+                </ListItem>
+              ))}
+            </List>
+          )}
         </Box>
       </Toolbar>
     </AppBar>
