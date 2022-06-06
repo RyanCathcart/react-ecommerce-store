@@ -9,12 +9,18 @@ import {
 import { useAppSelector } from "../../app/store/configureStore";
 import { currencyFormat } from "../../app/util/util";
 
-export default function BasketSummary() {
+interface BasketSummaryProps {
+  subtotal?: number;
+}
+
+export default function BasketSummary({ subtotal }: BasketSummaryProps) {
   const { basket } = useAppSelector((state) => state.basket);
-  const subtotal =
-    basket?.items.reduce((sum, item) => {
-      return sum + item.price * item.quantity;
-    }, 0) ?? 0;
+  if (subtotal === undefined) {
+    subtotal =
+      basket?.items.reduce((sum, item) => {
+        return sum + item.price * item.quantity;
+      }, 0) ?? 0;
+  }
   const deliveryFee = subtotal > 10000 ? 0 : 500;
 
   return (
