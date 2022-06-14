@@ -1,8 +1,11 @@
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReactECommerceStore.Api.Data;
+using ReactECommerceStore.Api.DTOs;
 using ReactECommerceStore.Api.Entities;
 using ReactECommerceStore.Api.Extensions;
 using ReactECommerceStore.Api.RequestHelpers;
@@ -12,8 +15,10 @@ namespace ReactECommerceStore.Api.Controllers;
 public class ProductsController : BaseApiController
 {
     private readonly StoreContext _context;
-    public ProductsController(StoreContext context)
+    private readonly IMapper _mapper;
+    public ProductsController(StoreContext context, IMapper mapper)
     {
+        _mapper = mapper;
         _context = context;
     }
 
@@ -33,7 +38,7 @@ public class ProductsController : BaseApiController
         return products;
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id}", Name = "GetProduct")]
     public async Task<ActionResult<Product>> GetProduct(int id)
     {
         var product = await _context.Products.FindAsync(id);
@@ -50,5 +55,20 @@ public class ProductsController : BaseApiController
         var types = await _context.Products.Select(p => p.Type).Distinct().ToListAsync();
 
         return Ok(new { brands, types });
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
+    public async Task<ActionResult> CreateProduct(CreateProductDto productDto)
+    {
+        var product = _mapper.Map<Product>(productDto);
+
+        _context.Products.Add(product);
+
+        var result = await _context.SaveChangesAsync() > 0;
+
+        if (result) return CreatedAtRoute("GetProduct", new { Id = product.Id }, product);
+
+        return BadRequest(new ProblemDetails { Title = "Problem creating new product" });
     }
 }

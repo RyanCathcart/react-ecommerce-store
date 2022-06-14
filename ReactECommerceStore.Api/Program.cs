@@ -14,12 +14,14 @@ using Microsoft.OpenApi.Models;
 using ReactECommerceStore.Api.Data;
 using ReactECommerceStore.Api.Entities;
 using ReactECommerceStore.Api.Middleware;
+using ReactECommerceStore.Api.RequestHelpers;
 using ReactECommerceStore.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container. (ConfigureServices)
 builder.Services.AddControllers();
+builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -53,9 +55,9 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<StoreContext>(opt =>
 {
     var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-    
+
     string connStr;
-    
+
     if (env == "Development")
     {
         // Use connection string from file.
