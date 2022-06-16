@@ -13,9 +13,9 @@ public class ImageService
     {
         var acc = new Account
         (
-            config["Cloudinary: CloudName"],
-            config["Cloudinary: ApiKey"],
-            config["Cloudinary: ApiSecret"]
+            config["Cloudinary:CloudName"],
+            config["Cloudinary:ApiKey"],
+            config["Cloudinary:ApiSecret"]
         );
 
         _cloudinary = new Cloudinary(acc);

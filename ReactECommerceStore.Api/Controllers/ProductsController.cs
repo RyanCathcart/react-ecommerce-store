@@ -9,6 +9,7 @@ using ReactECommerceStore.Api.DTOs;
 using ReactECommerceStore.Api.Entities;
 using ReactECommerceStore.Api.Extensions;
 using ReactECommerceStore.Api.RequestHelpers;
+using ReactECommerceStore.Api.Services;
 
 namespace ReactECommerceStore.Api.Controllers;
 
@@ -16,8 +17,10 @@ public class ProductsController : BaseApiController
 {
     private readonly StoreContext _context;
     private readonly IMapper _mapper;
-    public ProductsController(StoreContext context, IMapper mapper)
+    private readonly ImageService _imageService;
+    public ProductsController(StoreContext context, IMapper mapper, ImageService imageService)
     {
+        _imageService = imageService;
         _mapper = mapper;
         _context = context;
     }
@@ -59,9 +62,20 @@ public class ProductsController : BaseApiController
 
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<ActionResult> CreateProduct(CreateProductDto productDto)
+    public async Task<ActionResult> CreateProduct([FromForm] CreateProductDto productDto)
     {
         var product = _mapper.Map<Product>(productDto);
+
+        if (productDto.PictureFile != null)
+        {
+            var imageResult = await _imageService.AddImageAsync(productDto.PictureFile);
+
+            if (imageResult.Error != null)
+                return BadRequest(new ProblemDetails { Title = imageResult.Error.Message });
+
+            product.PictureUrl = imageResult.SecureUrl.ToString();
+            product.PublicId = imageResult.PublicId;
+        }
 
         _context.Products.Add(product);
 
