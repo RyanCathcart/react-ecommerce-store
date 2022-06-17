@@ -43,6 +43,7 @@ export default function AppDropzone(props: AppDropzoneProps) {
             ? { ...dropzoneStyles, ...dropzoneActive }
             : dropzoneStyles
         }
+        error={!!fieldState.error}
       >
         <input {...getInputProps()} />
         <UploadFile sx={{ fontSize: "100px" }} />
