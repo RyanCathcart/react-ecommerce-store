@@ -70,11 +70,11 @@ const requests = {
   postForm: (url: string, data: FormData) =>
     axios.post(url, data, {
       headers: { "Content-type": "multipart/form-data" },
-    }),
+    }).then(responseBody),
   putForm: (url: string, data: FormData) =>
     axios.put(url, data, {
       headers: { "Content-type": "multipart/form-data" },
-    }),
+    }).then(responseBody),
 };
 
 const Catalog = {
