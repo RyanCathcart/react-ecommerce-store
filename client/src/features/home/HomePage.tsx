@@ -10,7 +10,7 @@ export default function HomePage() {
     slidesToScroll: 1,
     arrows: false,
     autoplay: true,
-    autoPlaySpeed: 10000,
+    autoplaySpeed: 8000,
     pauseOnHover: true,
   };
 
