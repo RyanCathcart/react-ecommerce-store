@@ -17,7 +17,7 @@ namespace ReactECommerceStore.Api.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.5")
+                .HasAnnotation("ProductVersion", "7.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -297,14 +297,12 @@ namespace ReactECommerceStore.Api.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "128e161a-1e86-4a27-8cd7-220617b04bbb",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "99cf36c7-0b10-4ffe-8ca8-20e48f57adbb",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
