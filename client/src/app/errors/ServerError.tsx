@@ -1,9 +1,9 @@
 import { Button, Container, Divider, Paper, Typography } from "@mui/material";
-import { useHistory, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { router } from "../router/Routes";
 
 export default function ServerError() {
-  const history = useHistory();
-  const { state } = useLocation<any>();
+  const { state } = useLocation();
 
   return (
     <Container component={Paper}>
@@ -22,7 +22,7 @@ export default function ServerError() {
           Server Error
         </Typography>
       )}
-      <Button onClick={() => history.push("/catalog")}>
+      <Button onClick={() => router.navigate("/catalog")}>
         Go back to the store
       </Button>
     </Container>

@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { FieldValues } from "react-hook-form";
 import { toast } from "react-toastify";
-import { history } from "../..";
 import agent from "../../app/api/agent";
 import { User } from "../../app/models/user";
+import { router } from "../../app/router/Routes";
 import { setBasket } from "../basket/basketSlice";
 
 interface AccountState {
@@ -57,12 +57,16 @@ export const accountSlice = createSlice({
     signOut: (state) => {
       state.user = null;
       localStorage.removeItem("user");
-      history.push("/");
+      router.navigate("/");
     },
     setUser: (state, action) => {
       let claims = JSON.parse(atob(action.payload.token.split(".")[1]));
-      let roles = claims["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
-      state.user = {...action.payload, roles: typeof(roles) === "string" ? [roles] : roles}
+      let roles =
+        claims["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      state.user = {
+        ...action.payload,
+        roles: typeof roles === "string" ? [roles] : roles,
+      };
     },
   },
   extraReducers: (builder) => {
@@ -70,14 +74,20 @@ export const accountSlice = createSlice({
       state.user = null;
       localStorage.removeItem("user");
       toast.error("Session expired - please log in again");
-      history.push("/");
+      router.navigate("/");
     });
     builder.addMatcher(
       isAnyOf(signInUser.fulfilled, fetchCurrentUser.fulfilled),
       (state, action) => {
         let claims = JSON.parse(atob(action.payload.token.split(".")[1]));
-        let roles = claims["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
-        state.user = {...action.payload, roles: typeof(roles) === "string" ? [roles] : roles}
+        let roles =
+          claims[
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+          ];
+        state.user = {
+          ...action.payload,
+          roles: typeof roles === "string" ? [roles] : roles,
+        };
       }
     );
     builder.addMatcher(isAnyOf(signInUser.rejected), (state, action) => {
