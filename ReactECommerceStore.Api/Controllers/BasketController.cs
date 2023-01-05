@@ -90,7 +90,7 @@ public class BasketController : BaseApiController
         if (string.IsNullOrEmpty(buyerId))
         {
             buyerId= Guid.NewGuid().ToString();
-            var cookieOptions = new CookieOptions { IsEssential = true, Expires = DateTime.Now.AddDays(30) };
+            var cookieOptions = new CookieOptions { IsEssential = true, Expires = DateTime.UtcNow.AddDays(30) };
             Response.Cookies.Append("buyerId", buyerId, cookieOptions);
         }
         

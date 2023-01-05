@@ -59,7 +59,6 @@ export default function Header({ darkMode, handleThemeChange }: HeaderProps) {
             variant="h6"
             component={NavLink}
             to="/"
-            exact
             sx={navStyles}
             noWrap
           >

@@ -4,10 +4,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace ReactECommerceStore.Api.Data.Migrations
 {
+    /// <inheritdoc />
     public partial class PostGresInitial : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -73,13 +77,13 @@ namespace ReactECommerceStore.Api.Data.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     BuyerId = table.Column<string>(type: "text", nullable: true),
-                    ShippingAddress_FullName = table.Column<string>(type: "text", nullable: true),
-                    ShippingAddress_Address1 = table.Column<string>(type: "text", nullable: true),
-                    ShippingAddress_Address2 = table.Column<string>(type: "text", nullable: true),
-                    ShippingAddress_City = table.Column<string>(type: "text", nullable: true),
-                    ShippingAddress_State = table.Column<string>(type: "text", nullable: true),
-                    ShippingAddress_Zip = table.Column<string>(type: "text", nullable: true),
-                    ShippingAddress_Country = table.Column<string>(type: "text", nullable: true),
+                    ShippingAddressFullName = table.Column<string>(name: "ShippingAddress_FullName", type: "text", nullable: true),
+                    ShippingAddressAddress1 = table.Column<string>(name: "ShippingAddress_Address1", type: "text", nullable: true),
+                    ShippingAddressAddress2 = table.Column<string>(name: "ShippingAddress_Address2", type: "text", nullable: true),
+                    ShippingAddressCity = table.Column<string>(name: "ShippingAddress_City", type: "text", nullable: true),
+                    ShippingAddressState = table.Column<string>(name: "ShippingAddress_State", type: "text", nullable: true),
+                    ShippingAddressZip = table.Column<string>(name: "ShippingAddress_Zip", type: "text", nullable: true),
+                    ShippingAddressCountry = table.Column<string>(name: "ShippingAddress_Country", type: "text", nullable: true),
                     OrderDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Subtotal = table.Column<long>(type: "bigint", nullable: false),
                     DeliveryFee = table.Column<long>(type: "bigint", nullable: false),
@@ -103,7 +107,8 @@ namespace ReactECommerceStore.Api.Data.Migrations
                     PictureUrl = table.Column<string>(type: "text", nullable: true),
                     Type = table.Column<string>(type: "text", nullable: true),
                     Brand = table.Column<string>(type: "text", nullable: true),
-                    QuantityInStock = table.Column<int>(type: "integer", nullable: false)
+                    QuantityInStock = table.Column<int>(type: "integer", nullable: false),
+                    PublicId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -246,9 +251,9 @@ namespace ReactECommerceStore.Api.Data.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ItemOrdered_ProductId = table.Column<int>(type: "integer", nullable: true),
-                    ItemOrdered_Name = table.Column<string>(type: "text", nullable: true),
-                    ItemOrdered_PictureUrl = table.Column<string>(type: "text", nullable: true),
+                    ItemOrderedProductId = table.Column<int>(name: "ItemOrdered_ProductId", type: "integer", nullable: true),
+                    ItemOrderedName = table.Column<string>(name: "ItemOrdered_Name", type: "text", nullable: true),
+                    ItemOrderedPictureUrl = table.Column<string>(name: "ItemOrdered_PictureUrl", type: "text", nullable: true),
                     Price = table.Column<long>(type: "bigint", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
                     OrderId = table.Column<int>(type: "integer", nullable: true)
@@ -295,8 +300,8 @@ namespace ReactECommerceStore.Api.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, "6a396ee5-4aa5-4c7c-8f78-e7b029eaf482", "Member", "MEMBER" },
-                    { 2, "2f3e1473-c742-41ea-83e6-f11903962244", "Admin", "ADMIN" }
+                    { 1, null, "Member", "MEMBER" },
+                    { 2, null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -352,6 +357,7 @@ namespace ReactECommerceStore.Api.Data.Migrations
                 column: "OrderId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

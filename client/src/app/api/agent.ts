@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-import { history } from "../..";
 import { PaginatedResponse } from "../models/pagination";
+import { router } from "../router/Routes";
 import { store } from "../store/configureStore";
 
 const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
@@ -11,9 +11,9 @@ axios.defaults.withCredentials = true;
 
 const responseBody = (response: AxiosResponse) => response.data;
 
-axios.interceptors.request.use((config) => {
+axios.interceptors.request.use((config: any) => {
   const token = store.getState().account.user?.token;
-  if (token) config.headers!.Authorization = `Bearer ${token}`;
+  if (token && config.headers) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
@@ -31,7 +31,7 @@ axios.interceptors.response.use(
     return response;
   },
   (error: AxiosError) => {
-    const { data, status } = error.response!;
+    const { data, status } = error.response as AxiosResponse;
     switch (status) {
       case 400:
         if (data.errors) {
@@ -52,9 +52,9 @@ axios.interceptors.response.use(
         toast.error("You are not allowed to do that!");
         break;
       case 500:
-        history.push({
+        router.navigate({
           pathname: "/server-error",
-          state: { error: data },
+          //state: { error: data },//////////////////////////////////////////////////////////////
         });
         break;
       default:
@@ -71,13 +71,17 @@ const requests = {
   put: (url: string, body: {}) => axios.put(url, body).then(responseBody),
   delete: (url: string) => axios.delete(url).then(responseBody),
   postForm: (url: string, data: FormData) =>
-    axios.post(url, data, {
-      headers: { "Content-type": "multipart/form-data" },
-    }).then(responseBody),
+    axios
+      .post(url, data, {
+        headers: { "Content-type": "multipart/form-data" },
+      })
+      .then(responseBody),
   putForm: (url: string, data: FormData) =>
-    axios.put(url, data, {
-      headers: { "Content-type": "multipart/form-data" },
-    }).then(responseBody),
+    axios
+      .put(url, data, {
+        headers: { "Content-type": "multipart/form-data" },
+      })
+      .then(responseBody),
 };
 
 const Catalog = {
