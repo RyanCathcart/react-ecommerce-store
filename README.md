@@ -3,11 +3,11 @@ A basic example of an e-commerce store application developed using .NET and Type
 
 ## Technologies Used:
 #### Back End: <span>ASP.NET</span> Core API
-- Language: C# 10.0
+- Language: C# 11.0
 - Frameworks/Packages/Technologies:
-  - PostgreSQL - Database
-  - SQLite 6.0.4 - Database
-  - Entity Framework Core 6.0.4 - Object-Relational Mapper
+  - PostgreSQL 7.0.1 - Database
+  - SQLite 7.0.1 - Database
+  - Entity Framework Core 7.0.1 - Object-Relational Mapper
     
 #### Front End: React
 - Language: TypeScript 4.4.3
