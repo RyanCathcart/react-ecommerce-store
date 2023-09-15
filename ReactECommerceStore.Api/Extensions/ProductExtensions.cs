@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using ReactECommerceStore.Api.Entities;
-
 namespace ReactECommerceStore.Api.Extensions;
 
 public static class ProductExtensions

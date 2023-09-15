@@ -1,22 +1,8 @@
-﻿using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using ReactECommerceStore.Api.Data;
-using ReactECommerceStore.Api.Entities;
-using ReactECommerceStore.Api.Middleware;
-using ReactECommerceStore.Api.RequestHelpers;
-using ReactECommerceStore.Api.Services;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container. (ConfigureServices)
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -78,7 +64,7 @@ builder.Services.AddDbContext<StoreContext>(opt =>
         var pgHost = Environment.GetEnvironmentVariable("PGHOST");
         var pgPort = Environment.GetEnvironmentVariable("PGPORT");
 
-        connStr = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb};SSL Mode=Require;Trust Server Certificate=true";
+        connStr = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb}; SSL Mode=Require; Trust Server Certificate=true";
     }
 
     // Whether the connection string came from the local development configuration file

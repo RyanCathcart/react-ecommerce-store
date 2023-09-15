@@ -1,8 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using ReactECommerceStore.Api.Entities;
 using Stripe;
 
 namespace ReactECommerceStore.Api.Services;

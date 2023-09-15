@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace ReactECommerceStore.Api.Entities.OrderAggregate;
 
 [Owned]

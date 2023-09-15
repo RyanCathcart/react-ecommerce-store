@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace ReactECommerceStore.Api.DTOs;
 
 public class BasketDto

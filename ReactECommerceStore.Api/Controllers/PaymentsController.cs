@@ -1,14 +1,7 @@
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using ReactECommerceStore.Api.Data;
 using ReactECommerceStore.Api.DTOs;
 using ReactECommerceStore.Api.Entities.OrderAggregate;
 using ReactECommerceStore.Api.Extensions;
-using ReactECommerceStore.Api.Services;
 using Stripe;
 
 namespace ReactECommerceStore.Api.Controllers;

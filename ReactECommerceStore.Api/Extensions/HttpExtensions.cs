@@ -1,6 +1,4 @@
 using System.Text.Json;
-using Microsoft.AspNetCore.Http;
-using ReactECommerceStore.Api.RequestHelpers;
 
 namespace ReactECommerceStore.Api.Extensions;
 

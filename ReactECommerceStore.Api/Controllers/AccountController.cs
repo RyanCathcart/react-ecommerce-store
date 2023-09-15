@@ -1,14 +1,6 @@
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ReactECommerceStore.Api.Data;
 using ReactECommerceStore.Api.DTOs;
-using ReactECommerceStore.Api.Entities;
 using ReactECommerceStore.Api.Extensions;
-using ReactECommerceStore.Api.Services;
 
 namespace ReactECommerceStore.Api.Controllers;
 

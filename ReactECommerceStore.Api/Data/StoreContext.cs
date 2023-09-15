@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using ReactECommerceStore.Api.Entities;
 using ReactECommerceStore.Api.Entities.OrderAggregate;
 
 namespace ReactECommerceStore.Api.Data;

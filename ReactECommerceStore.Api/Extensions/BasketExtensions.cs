@@ -1,7 +1,4 @@
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using ReactECommerceStore.Api.DTOs;
-using ReactECommerceStore.Api.Entities;
 
 namespace ReactECommerceStore.Api.Extensions;
 

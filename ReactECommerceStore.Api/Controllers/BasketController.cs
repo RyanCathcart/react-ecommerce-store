@@ -1,11 +1,5 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ReactECommerceStore.Api.Data;
 using ReactECommerceStore.Api.DTOs;
-using ReactECommerceStore.Api.Entities;
 using ReactECommerceStore.Api.Extensions;
 
 namespace ReactECommerceStore.Api.Controllers;

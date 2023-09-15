@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using ReactECommerceStore.Api.Entities.OrderAggregate;
 
 namespace ReactECommerceStore.Api.DTOs;
