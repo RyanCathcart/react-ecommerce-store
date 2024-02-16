@@ -13,7 +13,7 @@ import { StripeElementType } from "@stripe/stripe-js";
 
 interface PaymentFormProps {
   cardState: { elementError: { [key in StripeElementType]?: string } };
-  onCardInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onCardInputChange: (event: any) => void;
 }
 
 export default function PaymentForm({

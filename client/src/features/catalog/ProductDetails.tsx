@@ -45,13 +45,11 @@ export default function ProductDetails() {
   }
 
   function handleUpdateCart() {
-    if (!product) return;
-    
     if (!item || quantity > item.quantity) {
       const updatedQuantity = item ? quantity - item.quantity : quantity;
       dispatch(
         addBasketItemAsync({
-          productId: product.id,
+          productId: product?.id!,
           quantity: updatedQuantity,
         })
       );
@@ -59,7 +57,7 @@ export default function ProductDetails() {
       const updatedQuantity = item.quantity - quantity;
       dispatch(
         removeBasketItemAsync({
-          productId: product.id,
+          productId: product?.id!,
           quantity: updatedQuantity,
         })
       );

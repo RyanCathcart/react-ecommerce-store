@@ -29,10 +29,10 @@ export default function Orders() {
 
   if (loading) return <LoadingComponent message="Loading orders..." />;
 
-  if (selectedOrderNumber > 0 && orders) {
+  if (selectedOrderNumber > 0) {
     return (
       <OrderDetailed
-        order={orders.find((o) => o.id === selectedOrderNumber)!}
+        order={orders?.find((o) => o.id === selectedOrderNumber)!}
         setSelectedOrder={setSelectedOrderNumber}
       />
     );

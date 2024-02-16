@@ -60,8 +60,8 @@ export const accountSlice = createSlice({
       router.navigate("/");
     },
     setUser: (state, action) => {
-      const claims = JSON.parse(atob(action.payload.token.split(".")[1]));
-      const roles =
+      let claims = JSON.parse(atob(action.payload.token.split(".")[1]));
+      let roles =
         claims["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
       state.user = {
         ...action.payload,
@@ -79,8 +79,8 @@ export const accountSlice = createSlice({
     builder.addMatcher(
       isAnyOf(signInUser.fulfilled, fetchCurrentUser.fulfilled),
       (state, action) => {
-        const claims = JSON.parse(atob(action.payload.token.split(".")[1]));
-        const roles =
+        let claims = JSON.parse(atob(action.payload.token.split(".")[1]));
+        let roles =
           claims[
             "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
           ];
@@ -90,7 +90,7 @@ export const accountSlice = createSlice({
         };
       }
     );
-    builder.addMatcher(isAnyOf(signInUser.rejected), (_state, action) => {
+    builder.addMatcher(isAnyOf(signInUser.rejected), (state, action) => {
       throw action.payload;
     });
   },
