@@ -2,35 +2,38 @@
 
 // Add services to the container. (ConfigureServices)
 builder.Services.AddControllers();
-builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(MappingProfiles).Assembly));
+builder.Services.AddOpenApi(c =>
 {
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "Jwt auth header",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                },
-                Scheme = "oauth2",
-                Name = "Bearer",
-                In = ParameterLocation.Header
-            },
-            new List<string>()
-        }
-    });
 });
+//builder.Services.AddSwaggerGen(c =>
+//{
+//    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+//    {
+//        Description = "Jwt auth header",
+//        Name = "Authorization",
+//        In = ParameterLocation.Header,
+//        Type = SecuritySchemeType.ApiKey,
+//        Scheme = "Bearer"
+//    });
+//    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+//    {
+//        {
+//            new OpenApiSecurityScheme
+//            {
+//                Reference = new OpenApiReference
+//                {
+//                    Type = ReferenceType.SecurityScheme,
+//                    Id = "Bearer"
+//                },
+//                Scheme = "oauth2",
+//                Name = "Bearer",
+//                In = ParameterLocation.Header
+//            },
+//            new List<string>()
+//        }
+//    });
+//});
 builder.Services.AddDbContext<StoreContext>(opt =>
 {
     var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
@@ -68,7 +71,7 @@ builder.Services.AddDbContext<StoreContext>(opt =>
     }
 
     // Whether the connection string came from the local development configuration file
-    // or from the environment variable from Heroku, use it to set up your DbContext.
+    // or from the environment variable from a cloud provider (Azure, Heroku, Railway, etc), use it to set up your DbContext.
     opt.UseNpgsql(connStr);
 });
 builder.Services.AddCors();
@@ -103,8 +106,11 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "OpenAPI v1");
+    });
 }
 
 // app.UseHttpsRedirection();
@@ -131,8 +137,8 @@ var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 try
 {
-    await context.Database.MigrateAsync();
-    await DbInitializer.Initialize(context, userManager);
+    //await context.Database.MigrateAsync();
+    //await DbInitializer.Initialize(context, userManager);
 }
 catch (Exception ex)
 {
