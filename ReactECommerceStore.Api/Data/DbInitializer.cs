@@ -1,14 +1,26 @@
-namespace ReactECommerceStore.Api.Data;
+﻿namespace ReactECommerceStore.Api.Data;
 
 public static class DbInitializer
 {
-    public static async Task Initialize(StoreContext context, UserManager<User> userManager)
+    public static async Task InitializeDb(WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        
+        var context = scope.ServiceProvider.GetRequiredService<StoreContext>()
+            ?? throw new InvalidOperationException("Failed to retrieve store context.");
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>()
+            ?? throw new InvalidOperationException("Failed to retrieve user manager.");
+
+        await SeedData(context, userManager);
+    }
+
+    public static async Task SeedData(StoreContext context, UserManager<User> userManager)
     {
         if (!userManager.Users.Any())
         {
             var user = new User
             {
-                UserName = "bob",
+                UserName = "bob@test.com",
                 Email = "bob@test.com"
             };
 
@@ -22,7 +34,7 @@ public static class DbInitializer
             };
 
             await userManager.CreateAsync(admin, "Pa$$w0rd");
-            await userManager.AddToRolesAsync(admin, new[] {"Member", "Admin"});
+            await userManager.AddToRolesAsync(admin, ["Member", "Admin"]);
         }
 
         if (context.Products.Any()) return;

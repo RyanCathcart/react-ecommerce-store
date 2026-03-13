@@ -1,6 +1,6 @@
-namespace ReactECommerceStore.Api.Entities;
+﻿namespace ReactECommerceStore.Api.Entities;
 
 public class UserAddress : Address
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
 }   

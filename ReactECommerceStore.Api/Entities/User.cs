@@ -1,6 +1,6 @@
-namespace ReactECommerceStore.Api.Entities;
+﻿namespace ReactECommerceStore.Api.Entities;
 
-public class User : IdentityUser<int>
+public class User : IdentityUser
 {
     public UserAddress Address { get; set; }
 }
