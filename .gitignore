@@ -5,6 +5,7 @@
 
 .vscode
 appsettings.json
+ReactECommerceStore.Api/.env
 ReactECommerceStore.Api/store.db
 ReactECommerceStore.Api/store.db-shm
 ReactECommerceStore.Api/store.db-wal

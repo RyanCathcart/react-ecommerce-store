@@ -42,32 +42,13 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 
     if (env == "Development")
     {
-        // Use connection string from file.
+        // Use connection string from appsettings.Development.json file.
         connStr = builder.Configuration.GetConnectionString("DefaultConnection");
     }
     else
     {
-        // Use connection string provided at runtime by Heroku.
-        // var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-
-        // Parse connection URL to connection string for Npgsql
-        // connUrl = connUrl.Replace("postgres://", string.Empty);
-        // var pgUserPass = connUrl.Split("@")[0];
-        // var pgHostPortDb = connUrl.Split("@")[1];
-        // var pgHostPort = pgHostPortDb.Split("/")[0];
-        // var pgDb = pgHostPortDb.Split("/")[1];
-        // var pgUser = pgUserPass.Split(":")[0];
-        // var pgPass = pgUserPass.Split(":")[1];
-        // var pgHost = pgHostPort.Split(":")[0];
-        // var pgPort = pgHostPort.Split(":")[1];
-
-        var pgDb = Environment.GetEnvironmentVariable("PGDATABASE");
-        var pgUser = Environment.GetEnvironmentVariable("PGUSER");
-        var pgPass = Environment.GetEnvironmentVariable("PGPASSWORD");
-        var pgHost = Environment.GetEnvironmentVariable("PGHOST");
-        var pgPort = Environment.GetEnvironmentVariable("PGPORT");
-
-        connStr = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb}; SSL Mode=Require; Trust Server Certificate=true";
+        //connStr = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb};SSL Mode=Require;Trust Server Certificate=true";
+        connStr = Environment.GetEnvironmentVariable("ConnectionString");
     }
 
     // Whether the connection string came from the local development configuration file
@@ -75,12 +56,18 @@ builder.Services.AddDbContext<StoreContext>(opt =>
     opt.UseNpgsql(connStr);
 });
 builder.Services.AddCors();
-builder.Services.AddIdentityCore<User>(opt =>
+builder.Services.AddIdentityApiEndpoints<User>(opt =>
 {
     opt.User.RequireUniqueEmail = true;
 })
-    .AddRoles<Role>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<StoreContext>();
+//builder.Services.AddIdentityCore<User>(opt =>
+//{
+//    opt.User.RequireUniqueEmail = true;
+//})
+//    .AddRoles<Role>()
+//    .AddEntityFrameworkStores<StoreContext>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(opt =>
     {
@@ -111,9 +98,11 @@ if (app.Environment.IsDevelopment())
     {
         options.SwaggerEndpoint("/openapi/v1.json", "OpenAPI v1");
     });
+} 
+else
+{
+    // app.UseHttpsRedirection();
 }
-
-// app.UseHttpsRedirection();
 
 app.UseRouting();
 
@@ -129,6 +118,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapGroup("api").MapIdentityApi<User>();
 app.MapFallbackToController("Index", "Fallback");
 
 using var scope = app.Services.CreateScope();
@@ -137,8 +127,8 @@ var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 try
 {
-    //await context.Database.MigrateAsync();
-    //await DbInitializer.Initialize(context, userManager);
+    await context.Database.MigrateAsync();
+    await DbInitializer.InitializeDb(app);
 }
 catch (Exception ex)
 {

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace ReactECommerceStore.Api.Controllers;
 
@@ -7,7 +7,7 @@ public class BuggyController : BaseApiController
     [HttpGet("not-found")]
     public ActionResult GetNotFound()
     {
-        return NotFound();
+        return NotFound(new ProblemDetails { Title = "Not Found" });
     }
 
     [HttpGet("bad-request")]
