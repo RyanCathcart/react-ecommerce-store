@@ -19,5 +19,5 @@ jobs:
           context: .
           file: ./ReactECommerceStore.Api/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/react-ecommerce-store:latest
+          tags: ghcr.io/ryancathcart/react-ecommerce-store:latest
             
