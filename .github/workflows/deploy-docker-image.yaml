@@ -16,6 +16,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
         with:
+          context: "{{defaultContext}}:ReactECommerceStore.Api"
           push: true
           tags: ghcr.io/ryancathcart/react-ecommerce-store:latest
             
