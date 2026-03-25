@@ -1,10 +1,11 @@
 ﻿services:
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/ryancathcart/react-ecommerce-store:latest
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     ports:
       - "8080:80"
+      - "8081:443"
     env_file: ".env"
     environment:
       ConnectionString: Server=${PGHOST};Port=${PGPORT};User Id=${PGUSER};Password=${PGPASSWORD};Database=${PGDATABASE}
@@ -25,9 +26,9 @@
       POSTGRES_USER: ${PGUSER}
       POSTGRES_PASSWORD: ${PGPASSWORD}
     volumes:
-      - ecommerce_db_pg_data:/var/lib/postgresql/data
+      - react_estore_pg_db_data:/var/lib/postgresql/data
     ports: 
      - "5432:5432"
     
 volumes:
- ecommerce_db_pg_data:
+  react_estore_pg_db_data:
