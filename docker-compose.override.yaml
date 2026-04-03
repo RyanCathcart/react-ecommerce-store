@@ -12,3 +12,17 @@ services:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # reactecommercestore.client:
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./reactecommercestore.client:/app
+  #     - /app/node_modules
+  #   environment:
+  #     - CHOKIDAR_USEPOLLING=true
+  #   depends_on:
+  #     - reactecommercestore.api

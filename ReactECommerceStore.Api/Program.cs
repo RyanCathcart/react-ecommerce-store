@@ -3,42 +3,12 @@
 // Add services to the container. (ConfigureServices)
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(MappingProfiles).Assembly));
-builder.Services.AddOpenApi(c =>
-{
-});
-//builder.Services.AddSwaggerGen(c =>
-//{
-//    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-//    {
-//        Description = "Jwt auth header",
-//        Name = "Authorization",
-//        In = ParameterLocation.Header,
-//        Type = SecuritySchemeType.ApiKey,
-//        Scheme = "Bearer"
-//    });
-//    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-//    {
-//        {
-//            new OpenApiSecurityScheme
-//            {
-//                Reference = new OpenApiReference
-//                {
-//                    Type = ReferenceType.SecurityScheme,
-//                    Id = "Bearer"
-//                },
-//                Scheme = "oauth2",
-//                Name = "Bearer",
-//                In = ParameterLocation.Header
-//            },
-//            new List<string>()
-//        }
-//    });
-//});
+builder.Services.AddOpenApi();
 builder.Services.AddDbContext<StoreContext>(opt =>
 {
     var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-    string connStr;
+    string? connStr;
 
     if (env == "Development")
     {
@@ -51,37 +21,17 @@ builder.Services.AddDbContext<StoreContext>(opt =>
         connStr = Environment.GetEnvironmentVariable("ConnectionString");
     }
 
-    // Whether the connection string came from the local development configuration file
-    // or from the environment variable from a cloud provider (Azure, Heroku, Railway, etc), use it to set up your DbContext.
     opt.UseNpgsql(connStr);
 });
 builder.Services.AddCors();
+builder.Services.AddTransient<ExceptionMiddleware>();
 builder.Services.AddIdentityApiEndpoints<User>(opt =>
 {
     opt.User.RequireUniqueEmail = true;
 })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<StoreContext>();
-//builder.Services.AddIdentityCore<User>(opt =>
-//{
-//    opt.User.RequireUniqueEmail = true;
-//})
-//    .AddRoles<Role>()
-//    .AddEntityFrameworkStores<StoreContext>();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(opt =>
-    {
-        opt.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                .GetBytes(builder.Configuration["JWTSettings:TokenKey"]))
-        };
-    });
-builder.Services.AddAuthorization();
+
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<PaymentService>();
 builder.Services.AddScoped<ImageService>();
@@ -98,7 +48,7 @@ if (app.Environment.IsDevelopment())
     {
         options.SwaggerEndpoint("/openapi/v1.json", "OpenAPI v1");
     });
-} 
+}
 
 app.UseHttpsRedirection();
 
@@ -114,7 +64,7 @@ if (app.Environment.IsDevelopment())
         opt.AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials()
-            .WithOrigins("http://localhost:3000");
+            .WithOrigins("https://localhost:3000");
     });
 }
 

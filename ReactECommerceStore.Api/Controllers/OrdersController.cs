@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ReactECommerceStore.Api.DTOs;
 using ReactECommerceStore.Api.Entities.OrderAggregate;
 using ReactECommerceStore.Api.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ReactECommerceStore.Api.Controllers;
 
@@ -17,27 +18,32 @@ public class OrdersController : BaseApiController
     [HttpGet]
     public async Task<ActionResult<List<OrderDto>>> GetOrders()
     {
-        return await _context.Orders
+        var orders = await _context.Orders
             .ProjectOrderToOrderDto()
-            .Where(x => x.BuyerId == User.Identity.Name)
+            .Where(o => o.BuyerEmail == User.GetUsername())
             .ToListAsync();
+
+        return orders;
     }
 
     [HttpGet("{id}", Name = "GetOrder")]
     public async Task<ActionResult<OrderDto>> GetOrder(int id)
     {
-        return await _context.Orders
+        var order = await _context.Orders
             .ProjectOrderToOrderDto()
-            .Where(x => x.BuyerId == User.Identity.Name && x.Id == id)
+            .Where(o => o.BuyerEmail == User.GetUsername() && id == o.Id)
             .FirstOrDefaultAsync();
+
+        if (order == null) return NotFound();
+
+        return order;
     }
 
     [HttpPost]
     public async Task<ActionResult<int>> CreateOrder(CreateOrderDto orderDto)
     {
         var basket = await _context.Baskets
-            .RetrieveBasketWithItems(User.Identity.Name)
-            .FirstOrDefaultAsync();
+            .GetBasketWithItems(User.Identity.Name);
 
         if (basket == null) return BadRequest(new ProblemDetails { Title = "Could not locate basket" });
 
@@ -68,7 +74,7 @@ public class OrdersController : BaseApiController
         var order = new Order
         {
             OrderItems = items,
-            BuyerId = User.Identity.Name,
+            BuyerEmail = User.GetUsername(),
             ShippingAddress = orderDto.ShippingAddress,
             Subtotal = subtotal,
             DeliveryFee = deliveryFee,

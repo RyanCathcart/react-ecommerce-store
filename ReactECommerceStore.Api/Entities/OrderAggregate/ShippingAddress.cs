@@ -1,7 +1,7 @@
-namespace ReactECommerceStore.Api.Entities.OrderAggregate;
+﻿namespace ReactECommerceStore.Api.Entities.OrderAggregate;
 
 [Owned]
 public class ShippingAddress : Address
 {
-    
+
 }

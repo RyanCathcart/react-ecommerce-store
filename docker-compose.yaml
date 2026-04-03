@@ -1,14 +1,21 @@
 services:
   reactecommercestore.api:
-    image: ${DOCKER_REGISTRY-}reactecommercestoreapi
+    image: ${DOCKER_REGISTRY-}reactestore_api
     build:
       context: .
       dockerfile: ReactECommerceStore.Api/Dockerfile
 
+  # reactecommercestore.client:
+  #   image: reactestore_client:dev
+  #   container_name: reactestore_client
+  #   build:
+  #     context: ./reactecommercestore.client
+  #     dockerfile: Dockerfile
+
   postgres:
     image: postgres:alpine
+    container_name: reactestore_postgres
     restart: "unless-stopped"
-    container_name: reactecommercestore_postgres
     healthcheck:
         test: ["CMD-SHELL", "pg_isready -U postgres"]
         interval: 10s

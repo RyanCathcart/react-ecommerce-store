@@ -21,8 +21,8 @@ public class StoreContext(DbContextOptions options) : IdentityDbContext<User>(op
 
         builder.Entity<IdentityRole>()
             .HasData(
-                new IdentityRole { Id = "f69f4be7-3c9d-4d68-ad01-0c633f832e4a", ConcurrencyStamp = "Member", Name = "Member", NormalizedName = "MEMBER" },
-                new IdentityRole { Id = "862f75b7-f103-4446-ae07-2973c27e8a80", ConcurrencyStamp = "Admin", Name = "Admin", NormalizedName = "ADMIN" }
+                new IdentityRole { Name = "Member", NormalizedName = "MEMBER", Id = "f69f4be7-3c9d-4d68-ad01-0c633f832e4a", ConcurrencyStamp = "Member" },
+                new IdentityRole { Name = "Admin", NormalizedName = "ADMIN", Id = "862f75b7-f103-4446-ae07-2973c27e8a80", ConcurrencyStamp = "Admin" }
             );
     }
 }

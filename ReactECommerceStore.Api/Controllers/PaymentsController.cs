@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ReactECommerceStore.Api.DTOs;
 using ReactECommerceStore.Api.Entities.OrderAggregate;
 using ReactECommerceStore.Api.Extensions;
@@ -22,9 +22,7 @@ public class PaymentsController : BaseApiController
     [HttpPost]
     public async Task<ActionResult<BasketDto>> CreateOrUpdatePaymentIntent()
     {
-        var basket = await _context.Baskets
-            .RetrieveBasketWithItems(User.Identity.Name)
-            .FirstOrDefaultAsync();
+        var basket = await _context.Baskets.GetBasketWithItems(Request.Cookies["basketId"]);
 
         if (basket == null) return NotFound();
 
@@ -33,7 +31,6 @@ public class PaymentsController : BaseApiController
         if (intent == null) return BadRequest(new ProblemDetails { Title = "Problem creating payment intent" });
 
         basket.PaymentIntentId = basket.PaymentIntentId ?? intent.Id;
-        basket.ClientSecret = basket.ClientSecret ?? intent.ClientSecret;
 
         _context.Update(basket);
 
@@ -41,7 +38,7 @@ public class PaymentsController : BaseApiController
 
         if (!result) return BadRequest(new ProblemDetails { Title = "Problem updating basket with payment intent" });
 
-        return basket.MapBasketToDto();
+        return basket.MapToDto();
     }
 
     [HttpPost("webhook")]

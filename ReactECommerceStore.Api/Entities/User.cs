@@ -2,5 +2,5 @@
 
 public class User : IdentityUser
 {
-    public UserAddress Address { get; set; }
+    public UserAddress? Address { get; set; }
 }

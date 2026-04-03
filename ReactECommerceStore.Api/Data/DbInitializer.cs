@@ -5,7 +5,7 @@ public static class DbInitializer
     public static async Task InitializeDb(WebApplication app)
     {
         using var scope = app.Services.CreateScope();
-        
+
         var context = scope.ServiceProvider.GetRequiredService<StoreContext>()
             ?? throw new InvalidOperationException("Failed to retrieve store context.");
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>()
@@ -16,6 +16,8 @@ public static class DbInitializer
 
     public static async Task SeedData(StoreContext context, UserManager<User> userManager)
     {
+        await context.Database.MigrateAsync();
+
         if (!userManager.Users.Any())
         {
             var user = new User
@@ -29,7 +31,7 @@ public static class DbInitializer
 
             var admin = new User
             {
-                UserName = "admin",
+                UserName = "admin@test.com",
                 Email = "admin@test.com"
             };
 

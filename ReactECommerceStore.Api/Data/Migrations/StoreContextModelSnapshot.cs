@@ -17,7 +17,7 @@ namespace ReactECommerceStore.Api.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.2")
+                .HasAnnotation("ProductVersion", "10.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -178,10 +178,8 @@ namespace ReactECommerceStore.Api.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("BuyerId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ClientSecret")
+                    b.Property<string>("BasketId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PaymentIntentId")
@@ -226,7 +224,8 @@ namespace ReactECommerceStore.Api.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("BuyerId")
+                    b.Property<string>("BuyerEmail")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<long>("DeliveryFee")
@@ -239,6 +238,7 @@ namespace ReactECommerceStore.Api.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("PaymentIntentId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<long>("Subtotal")
@@ -282,15 +282,19 @@ namespace ReactECommerceStore.Api.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Brand")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PictureUrl")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<long>("Price")
@@ -303,6 +307,7 @@ namespace ReactECommerceStore.Api.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Type")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -380,24 +385,31 @@ namespace ReactECommerceStore.Api.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Address1")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Address2")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Country")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("FullName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("State")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Zip")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -483,24 +495,31 @@ namespace ReactECommerceStore.Api.Data.Migrations
                                 .HasColumnType("integer");
 
                             b1.Property<string>("Address1")
+                                .IsRequired()
                                 .HasColumnType("text");
 
                             b1.Property<string>("Address2")
+                                .IsRequired()
                                 .HasColumnType("text");
 
                             b1.Property<string>("City")
+                                .IsRequired()
                                 .HasColumnType("text");
 
                             b1.Property<string>("Country")
+                                .IsRequired()
                                 .HasColumnType("text");
 
                             b1.Property<string>("FullName")
+                                .IsRequired()
                                 .HasColumnType("text");
 
                             b1.Property<string>("State")
+                                .IsRequired()
                                 .HasColumnType("text");
 
                             b1.Property<string>("Zip")
+                                .IsRequired()
                                 .HasColumnType("text");
 
                             b1.HasKey("OrderId");
@@ -527,9 +546,11 @@ namespace ReactECommerceStore.Api.Data.Migrations
                                 .HasColumnType("integer");
 
                             b1.Property<string>("Name")
+                                .IsRequired()
                                 .HasColumnType("text");
 
                             b1.Property<string>("PictureUrl")
+                                .IsRequired()
                                 .HasColumnType("text");
 
                             b1.Property<int>("ProductId")
@@ -543,7 +564,8 @@ namespace ReactECommerceStore.Api.Data.Migrations
                                 .HasForeignKey("OrderItemId");
                         });
 
-                    b.Navigation("ItemOrdered");
+                    b.Navigation("ItemOrdered")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ReactECommerceStore.Api.Entities.UserAddress", b =>

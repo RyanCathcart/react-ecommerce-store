@@ -1,17 +1,14 @@
-using ReactECommerceStore.Api.DTOs;
+﻿using ReactECommerceStore.Api.DTOs;
 
 namespace ReactECommerceStore.Api.Extensions;
 
 public static class BasketExtensions
 {
-    public static BasketDto MapBasketToDto(this Basket basket)
+    public static BasketDto MapToDto(this Basket basket)
     {
         return new BasketDto
         {
-            Id = basket.Id,
-            BuyerId = basket.BuyerId,
-            PaymentIntentId = basket.PaymentIntentId,
-            ClientSecret = basket.ClientSecret,
+            Id = basket.BasketId,
             Items = basket.Items.Select(item => new BasketItemDto
             {
                 ProductId = item.ProductId,
@@ -25,9 +22,12 @@ public static class BasketExtensions
         };
     }
 
-    public static IQueryable<Basket> RetrieveBasketWithItems(this IQueryable<Basket> query, string BuyerId)
+    public static async Task<Basket> GetBasketWithItems(this IQueryable<Basket> query, string? basketId)
     {
-        return query.Include(i => i.Items)
-            .ThenInclude(p => p.Product).Where(b => b.BuyerId == BuyerId);
+        return await query
+            .Include(i => i.Items)
+            .ThenInclude(p => p.Product)
+            .FirstOrDefaultAsync(b => b.BasketId == basketId) 
+            ?? throw new Exception("Cannot get basket");
     }
 }

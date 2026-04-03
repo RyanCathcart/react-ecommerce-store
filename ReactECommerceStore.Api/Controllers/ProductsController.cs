@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ReactECommerceStore.Api.DTOs;
 using ReactECommerceStore.Api.Extensions;
@@ -33,7 +33,7 @@ public class ProductsController : BaseApiController
         return products;
     }
 
-    [HttpGet("{id}", Name = "GetProduct")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<Product>> GetProduct(int id)
     {
         var product = await _context.Products.FindAsync(id);

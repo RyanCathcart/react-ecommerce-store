@@ -1,10 +1,10 @@
-namespace ReactECommerceStore.Api.RequestHelpers;
+﻿namespace ReactECommerceStore.Api.RequestHelpers;
 
 public class PagedList<T> : List<T>
 {
     public PagedList(List<T> items, int count, int pageNumber, int pageSize)
     {
-        MetaData = new MetaData
+        MetaData = new PaginationMetaData
         {
             TotalCount = count,
             PageSize = pageSize,
@@ -14,7 +14,7 @@ public class PagedList<T> : List<T>
         AddRange(items);
     }
 
-    public MetaData MetaData { get; set; }
+    public PaginationMetaData MetaData { get; set; }
 
     public static async Task<PagedList<T>> ToPagedList(IQueryable<T> query, int pageNumber, int pageSize)
     {

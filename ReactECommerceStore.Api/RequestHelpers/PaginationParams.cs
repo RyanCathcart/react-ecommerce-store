@@ -1,10 +1,10 @@
-namespace ReactECommerceStore.Api.RequestHelpers;
+﻿namespace ReactECommerceStore.Api.RequestHelpers;
 
 public class PaginationParams
 {
     private const int MaxPageSize = 50;
     public int PageNumber { get; set; } = 1;
-    private int _pageSize = 6;
+    private int _pageSize = 8;
     public int PageSize
     {
         get => _pageSize;
