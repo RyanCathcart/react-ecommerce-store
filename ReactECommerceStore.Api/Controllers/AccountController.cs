@@ -1,25 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ReactECommerceStore.Api.DTOs;
-using ReactECommerceStore.Api.Extensions;
 
 namespace ReactECommerceStore.Api.Controllers;
 
-public class AccountController : BaseApiController
+public class AccountController(SignInManager<User> signInManager) : BaseApiController
 {
-    public readonly UserManager<User> _userManager;
-    private readonly StoreContext _context;
-    public AccountController(UserManager<User> userManager, StoreContext context)
-    {
-        _context = context;
-        _userManager = userManager;
-    }
 
     [HttpPost("register")]
-    public async Task<ActionResult> Register(RegisterDto registerDto)
+    public async Task<ActionResult> RegisterUser(RegisterDto registerDto)
     {
-        var user = new User { UserName = registerDto.Username, Email = registerDto.Email };
+        var user = new User { UserName = registerDto.Email, Email = registerDto.Email };
 
-        var result = await _userManager.CreateAsync(user, registerDto.Password);
+        var result = await signInManager.UserManager.CreateAsync(user, registerDto.Password);
 
         if (!result.Succeeded)
         {
@@ -31,38 +23,68 @@ public class AccountController : BaseApiController
             return ValidationProblem();
         }
 
-        await _userManager.AddToRoleAsync(user, "Member");
+        await signInManager.UserManager.AddToRoleAsync(user, "Member");
 
-        return StatusCode(201);
+        return Ok();
     }
 
-    //[Authorize]
-    //[HttpGet("currentUser")]
-    //public async Task<ActionResult<UserDto>> GetCurrentUser()
-    //{
-    //    var user = await _userManager.FindByNameAsync(User.Identity.Name);
+    [HttpGet("user-info")]
+    public async Task<ActionResult> GetUserInfo()
+    {
+        if (User.Identity?.IsAuthenticated == false) return NoContent();
 
-    //    var userBasket = await RetrieveBasket(User.Identity.Name);
+        var user = await signInManager.UserManager.GetUserAsync(User);
 
-    //    return new UserDto
-    //    {
-    //        Email = user.Email,
-    //        Token = await _tokenService.GenerateToken(user),
-    //        Basket = userBasket?.MapBasketToDto()
-    //    };
-    //}
+        if (user == null) return Unauthorized();
+
+        var roles = await signInManager.UserManager.GetRolesAsync(user);
+
+        return Ok(new
+        {
+            user.Email,
+            user.UserName,
+            Roles = roles
+        });
+    }
+
+    [HttpPost("logout")]
+    public async Task<ActionResult> Logout()
+    {
+        await signInManager.SignOutAsync();
+
+        return NoContent();
+    }
+
+    [Authorize]
+    [HttpPost("address")]
+    public async Task<ActionResult<Address>> CreateOrUpdateAddress(Address address)
+    {
+        var user = await signInManager.UserManager.Users
+            .Include(u => u.Address)
+            .FirstOrDefaultAsync(u => u.UserName == User.Identity!.Name);
+
+        if (user == null) return Unauthorized();
+
+        user.Address = address;
+
+        var result = await signInManager.UserManager.UpdateAsync(user);
+
+        if (!result.Succeeded) return BadRequest("Problem updating user address.");
+
+        return Ok(user.Address);
+    }
 
     [Authorize]
     [HttpGet("address")]
-    public async Task<ActionResult<UserAddress>> GetSavedAddress()
+    public async Task<ActionResult<Address>> GetSavedAddress()
     {
-        var address = await _userManager.Users
-            .Where(x => x.UserName == User.Identity!.Name)
-            .Select(user => user.Address)
+        var address = await signInManager.UserManager.Users
+            .Where(u => u.UserName == User.Identity!.Name)
+            .Select(u => u.Address)
             .FirstOrDefaultAsync();
 
         if (address == null) return NoContent();
 
-        return address;
+        return Ok(address);
     }
 }

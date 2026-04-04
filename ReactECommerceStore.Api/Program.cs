@@ -32,7 +32,6 @@ builder.Services.AddIdentityApiEndpoints<User>(opt =>
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<StoreContext>();
 
-builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<PaymentService>();
 builder.Services.AddScoped<ImageService>();
 

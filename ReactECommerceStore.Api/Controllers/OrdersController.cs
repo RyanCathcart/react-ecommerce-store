@@ -2,7 +2,6 @@
 using ReactECommerceStore.Api.DTOs;
 using ReactECommerceStore.Api.Entities.OrderAggregate;
 using ReactECommerceStore.Api.Extensions;
-using Microsoft.AspNetCore.Authorization;
 
 namespace ReactECommerceStore.Api.Controllers;
 
@@ -89,9 +88,9 @@ public class OrdersController : BaseApiController
             var user = await _context.Users
                 .Include(a => a.Address)
                 .FirstOrDefaultAsync(x => x.UserName == User.Identity.Name);
-            var address = new UserAddress
+            var address = new Address
             {
-                FullName = orderDto.ShippingAddress.FullName,
+                Name = orderDto.ShippingAddress.Name,
                 Address1 = orderDto.ShippingAddress.Address1,
                 Address2 = orderDto.ShippingAddress.Address2,
                 City = orderDto.ShippingAddress.City,

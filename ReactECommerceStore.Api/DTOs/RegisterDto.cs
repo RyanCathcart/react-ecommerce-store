@@ -1,6 +1,10 @@
-﻿namespace ReactECommerceStore.Api.DTOs;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class RegisterDto : LoginDto
+namespace ReactECommerceStore.Api.DTOs;
+
+public class RegisterDto
 {
-    public string Email { get; set; }
+    [Required]
+    public string Email { get; set; } = string.Empty;
+    public required string Password { get; set; }
 }

@@ -13,12 +13,6 @@ public class StoreContext(DbContextOptions options) : IdentityDbContext<User>(op
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<User>()
-            .HasOne(a => a.Address)
-            .WithOne()
-            .HasForeignKey<UserAddress>(a => a.Id)
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.Entity<IdentityRole>()
             .HasData(
                 new IdentityRole { Name = "Member", NormalizedName = "MEMBER", Id = "f69f4be7-3c9d-4d68-ad01-0c633f832e4a", ConcurrencyStamp = "Member" },
