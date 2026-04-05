@@ -2,20 +2,16 @@ import { Box, Divider, Fade, IconButton, Menu, MenuItem } from "@mui/material";
 import { useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router";
-import { useAppDispatch, useAppSelector } from "../store/store";
-import { signOut } from "../../features/account/accountSlice";
+import { useAppDispatch } from "../store/store";
 
-interface SmallScreenMenuProps {
+interface Props {
   midLinks?: any[];
   rightLinks?: any[];
 }
 
-export default function SmallScreenMenu({
-  midLinks,
-  rightLinks,
-}: SmallScreenMenuProps) {
+export default function SmallScreenMenu({ midLinks, rightLinks }: Props) {
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.account);
+  //const { user } = useAppSelector((state) => state.account);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: any) => {
@@ -66,12 +62,7 @@ export default function SmallScreenMenu({
             <MenuItem component={Link} to="/orders">
               My orders
             </MenuItem>
-            <MenuItem
-              onClick={() => {
-                dispatch(signOut());
-                //dispatch(clearBasket());
-              }}
-            >
+            <MenuItem>
               Sign out
             </MenuItem>
           </div>

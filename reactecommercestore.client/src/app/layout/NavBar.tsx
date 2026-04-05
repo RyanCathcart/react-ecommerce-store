@@ -1,23 +1,13 @@
 import { ShoppingCart } from "@mui/icons-material";
-import {
-    AppBar,
-    Badge,
-    Box,
-    IconButton,
-    LinearProgress,
-    List,
-    ListItem,
-    Toolbar,
-    Typography,
-} from "@mui/material";
+import { AppBar, Badge, Box, IconButton, LinearProgress, List, ListItem, Toolbar, Typography } from "@mui/material";
 import { Link, NavLink } from "react-router";
-import SmallScreenMenu from "../components/SmallScreenMenu";
-import { useAppDispatch, useAppSelector } from "../store/store";
-import SignedInMenu from "./SignedInMenu";
-import { setDarkMode } from "./uiSlice";
-import { ThemeToggleSwitch } from "../components/ThemeToggleSwitch";
+import { useUserInfoQuery } from "../../features/account/accountApi";
 import { useFetchBasketQuery } from "../../features/basket/basketApi";
+import { ThemeToggleSwitch } from "../components/ThemeToggleSwitch";
 import type { BasketItem } from "../models/basket";
+import { useAppDispatch, useAppSelector } from "../store/store";
+import { setDarkMode } from "./uiSlice";
+import UserMenu from "./UserMenu";
 
 const navStyles = {
   color: "inherit",
@@ -40,9 +30,9 @@ const rightLinks = [
 
 export default function NavBar() {
   const { isLoading, darkMode } = useAppSelector((state) => state.ui);
-  const { user } = useAppSelector((state) => state.account);
   const dispatch = useAppDispatch();
   const { data: basket } = useFetchBasketQuery();
+  const { data: user} = useUserInfoQuery();
 
   const itemCount = basket?.items.reduce((sum: number, item: BasketItem) => sum + item.quantity, 0) || 0;
 
@@ -79,11 +69,11 @@ export default function NavBar() {
                 {title.toUpperCase()}
               </ListItem>
             ))}
-            {user && user.roles?.includes("Admin") && (
-              <ListItem component={NavLink} to={"/inventory"} sx={navStyles}>
-                INVENTORY
-              </ListItem>
-            )}
+            {/*{user && user.roles?.includes("Admin") && (*/}
+            {/*  <ListItem component={NavLink} to={"/inventory"} sx={navStyles}>*/}
+            {/*    INVENTORY*/}
+            {/*  </ListItem>*/}
+            {/*)}*/}
           </List>
           <Box display="flex" alignItems="center">
             <IconButton
@@ -96,8 +86,9 @@ export default function NavBar() {
                 <ShoppingCart />
               </Badge>
             </IconButton>
+
             {user ? (
-              <SignedInMenu />
+              <UserMenu user={user} />
             ) : (
               <List sx={{ display: "flex" }}>
                 {rightLinks.map(({ title, path }) => (
@@ -112,9 +103,10 @@ export default function NavBar() {
                 ))}
               </List>
             )}
+
           </Box>
         </Box>
-        <SmallScreenMenu midLinks={midLinks} rightLinks={rightLinks} />
+        {/*<SmallScreenMenu midLinks={midLinks} rightLinks={rightLinks} />*/}
       </Toolbar>
       {isLoading && (
         <Box sx={{ width: "100%" }}>

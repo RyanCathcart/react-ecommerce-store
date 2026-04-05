@@ -8,7 +8,6 @@ import AppSelectList from "../../app/components/AppSelectList";
 import AppTextInput from "../../app/components/AppTextInput";
 import type { Product } from "../../app/models/product";
 import { useAppDispatch } from "../../app/store/store";
-import { validationSchema } from "./productValidation";
 
 interface ProductFormProps {
   product?: Product;

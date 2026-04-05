@@ -13,8 +13,6 @@ import AddressForm from "./AddressForm";
 import PaymentForm from "./PaymentForm";
 import Review from "./Review";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { validationSchema } from "./checkoutValidation";
-// import agent from "../../app/api/agent";
 import { useAppDispatch, useAppSelector } from "../../app/store/store";
 import type { StripeElementType } from "@stripe/stripe-js";
 import {
