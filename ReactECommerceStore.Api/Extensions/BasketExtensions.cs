@@ -9,7 +9,7 @@ public static class BasketExtensions
         return new BasketDto
         {
             Id = basket.BasketId,
-            Items = basket.Items.Select(item => new BasketItemDto
+            Items = [.. basket.Items.Select(item => new BasketItemDto
             {
                 ProductId = item.ProductId,
                 Name = item.Product.Name,
@@ -18,7 +18,9 @@ public static class BasketExtensions
                 Type = item.Product.Type,
                 Brand = item.Product.Brand,
                 Quantity = item.Quantity
-            }).ToList()
+            })],
+            ClientSecret = basket.ClientSecret,
+            PaymentIntentId = basket.PaymentIntentId
         };
     }
 

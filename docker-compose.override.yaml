@@ -1,9 +1,11 @@
 services:
   reactecommercestore.api:
+    env_file: "/ReactECommerceStore.Api/.env.dev"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=80
       - ASPNETCORE_HTTPS_PORTS=443
+      - ConnectionStrings__DefaultConnection=Server=${PGHOST};Port=${PGPORT};User Id=${PGUSER};Password=${PGPASSWORD};Database=${PGDATABASE}
     ports:
       - "5000:80"
       - "5001:443"
@@ -17,6 +19,11 @@ services:
         condition: service_healthy
 
   # reactecommercestore.client:
+  #   image: reactestore_client:dev
+  #   container_name: reactestore_client
+  #   build:
+  #     context: ./reactecommercestore.client
+  #     dockerfile: Dockerfile
   #   ports:
   #     - "3000:3000"
   #   volumes:
@@ -26,3 +33,24 @@ services:
   #     - CHOKIDAR_USEPOLLING=true
   #   depends_on:
   #     - reactecommercestore.api
+
+  postgres:
+    image: postgres:alpine
+    container_name: reactestore_postgres
+    restart: "unless-stopped"
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U postgres"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+    environment:
+      POSTGRES_DB: ${PGDATABASE}
+      POSTGRES_USER: ${PGUSER}
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+    volumes:
+      - ecommerce_db_pg_data:/var/lib/postgresql/data
+    ports: 
+     - "${PGPORT}:${PGPORT}"
+    
+volumes:
+ ecommerce_db_pg_data:

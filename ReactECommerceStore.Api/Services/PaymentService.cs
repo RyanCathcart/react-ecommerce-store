@@ -1,21 +1,14 @@
-using Stripe;
+﻿using Stripe;
 
 namespace ReactECommerceStore.Api.Services;
 
-public class PaymentService
+public class PaymentService()
 {
-    private readonly IConfiguration _config;
-    public PaymentService(IConfiguration config)
-    {
-        _config = config;
-
-    }
-
     public async Task<PaymentIntent> CreateOrUpdatePaymentIntent(Basket basket)
     {
-        StripeConfiguration.ApiKey = _config["StripeSettings:SecretKey"];
+        StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("StripeSettings__SecretKey");
 
-        var service = new PaymentIntentService();
+        var paymentIntentService = new PaymentIntentService();
 
         var intent = new PaymentIntent();
         var subtotal = basket.Items.Sum(item => item.Quantity * item.Product.Price);
@@ -23,21 +16,21 @@ public class PaymentService
 
         if (string.IsNullOrEmpty(basket.PaymentIntentId))
         {
-            var options = new PaymentIntentCreateOptions
+            var createOptions = new PaymentIntentCreateOptions
             {
                 Amount = subtotal + deliveryFee,
                 Currency = "usd",
-                PaymentMethodTypes = new List<string> { "card" }
+                PaymentMethodTypes = ["card"]
             };
-            intent = await service.CreateAsync(options);
+            intent = await paymentIntentService.CreateAsync(createOptions);
         }
         else
         {
-            var options = new PaymentIntentUpdateOptions
+            var updateOptions = new PaymentIntentUpdateOptions
             {
                 Amount = subtotal + deliveryFee,
             };
-            await service.UpdateAsync(basket.PaymentIntentId, options);
+            await paymentIntentService.UpdateAsync(basket.PaymentIntentId, updateOptions);
         }
 
         return intent;

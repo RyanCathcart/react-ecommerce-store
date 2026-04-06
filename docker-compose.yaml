@@ -4,31 +4,3 @@ services:
     build:
       context: .
       dockerfile: ReactECommerceStore.Api/Dockerfile
-
-  # reactecommercestore.client:
-  #   image: reactestore_client:dev
-  #   container_name: reactestore_client
-  #   build:
-  #     context: ./reactecommercestore.client
-  #     dockerfile: Dockerfile
-
-  postgres:
-    image: postgres:alpine
-    container_name: reactestore_postgres
-    restart: "unless-stopped"
-    healthcheck:
-        test: ["CMD-SHELL", "pg_isready -U postgres"]
-        interval: 10s
-        timeout: 5s
-        retries: 5
-    environment:
-      POSTGRES_DB: react_estore_db_dev
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: secret
-    volumes:
-      - ecommerce_db_pg_data:/var/lib/postgresql/data
-    ports: 
-     - "5432:5432"
-    
-volumes:
- ecommerce_db_pg_data:

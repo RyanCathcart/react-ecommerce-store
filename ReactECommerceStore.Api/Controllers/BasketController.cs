@@ -4,14 +4,8 @@ using ReactECommerceStore.Api.Extensions;
 
 namespace ReactECommerceStore.Api.Controllers;
 
-public class BasketController : BaseApiController
+public class BasketController(StoreContext context) : BaseApiController
 {
-    private readonly StoreContext _context;
-    public BasketController(StoreContext context)
-    {
-        _context = context;
-    }
-
     [HttpGet(Name = "GetBasket")]
     public async Task<ActionResult<BasketDto>> GetBasket()
     {
@@ -28,13 +22,13 @@ public class BasketController : BaseApiController
 
         if (basket == null) basket = CreateBasket();
 
-        var product = await _context.Products.FindAsync(productId);
+        var product = await context.Products.FindAsync(productId);
 
         if (product == null) return BadRequest(new ProblemDetails { Title = "Product Not Found" });
 
         basket.AddItem(product, quantity);
 
-        var result = await _context.SaveChangesAsync() > 0;
+        var result = await context.SaveChangesAsync() > 0;
 
         if (result) return CreatedAtRoute(nameof(GetBasket), basket.MapToDto());
 
@@ -52,7 +46,7 @@ public class BasketController : BaseApiController
         // remove item or reduce quantity
         basket.RemoveItem(productId, quantity);
         // save changes
-        var result = await _context.SaveChangesAsync() > 0;
+        var result = await context.SaveChangesAsync() > 0;
 
         if (result) return Ok();
 
@@ -61,7 +55,7 @@ public class BasketController : BaseApiController
 
     private async Task<Basket?> RetrieveBasket()
     {
-        return await _context.Baskets
+        return await context.Baskets
             .Include(i => i.Items)
             .ThenInclude(p => p.Product)
             .FirstOrDefaultAsync(x => x.BasketId == Request.Cookies["basketId"]);
@@ -80,7 +74,7 @@ public class BasketController : BaseApiController
         Response.Cookies.Append("basketId", basketId, cookieOptions);
 
         var basket = new Basket { BasketId = basketId };
-        _context.Baskets.Add(basket);
+        context.Baskets.Add(basket);
         return basket;
     }
 }

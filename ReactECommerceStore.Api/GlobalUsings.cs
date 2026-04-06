@@ -1,9 +1,6 @@
-﻿global using System.Text;
-global using Microsoft.AspNetCore.Authentication.JwtBearer;
-global using Microsoft.AspNetCore.Authorization;
+﻿global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.EntityFrameworkCore;
-global using Microsoft.IdentityModel.Tokens;
 global using ReactECommerceStore.Api.Data;
 global using ReactECommerceStore.Api.Entities;
 global using ReactECommerceStore.Api.Middleware;

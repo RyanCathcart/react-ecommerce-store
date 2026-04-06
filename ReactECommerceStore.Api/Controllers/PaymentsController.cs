@@ -6,37 +6,30 @@ using Stripe;
 
 namespace ReactECommerceStore.Api.Controllers;
 
-public class PaymentsController : BaseApiController
+public class PaymentsController(PaymentService paymentService, StoreContext context, IConfiguration config) : BaseApiController
 {
-    private readonly PaymentService _paymentService;
-    private readonly StoreContext _context;
-    private readonly IConfiguration _config;
-    public PaymentsController(PaymentService paymentService, StoreContext context, IConfiguration config)
-    {
-        _config = config;
-        _context = context;
-        _paymentService = paymentService;
-    }
 
     [Authorize]
     [HttpPost]
     public async Task<ActionResult<BasketDto>> CreateOrUpdatePaymentIntent()
     {
-        var basket = await _context.Baskets.GetBasketWithItems(Request.Cookies["basketId"]);
+        var basket = await context.Baskets.GetBasketWithItems(Request.Cookies["basketId"]);
 
-        if (basket == null) return NotFound();
+        if (basket == null) return BadRequest(new ProblemDetails { Title = "Problem with the basket" });
 
-        var intent = await _paymentService.CreateOrUpdatePaymentIntent(basket);
+        var intent = await paymentService.CreateOrUpdatePaymentIntent(basket);
 
         if (intent == null) return BadRequest(new ProblemDetails { Title = "Problem creating payment intent" });
 
-        basket.PaymentIntentId = basket.PaymentIntentId ?? intent.Id;
+        basket.PaymentIntentId ??= intent.Id;
+        basket.ClientSecret ??= intent.ClientSecret;
 
-        _context.Update(basket);
+        if (context.ChangeTracker.HasChanges())
+        {
+            var result = await context.SaveChangesAsync() > 0;
 
-        var result = await _context.SaveChangesAsync() > 0;
-
-        if (!result) return BadRequest(new ProblemDetails { Title = "Problem updating basket with payment intent" });
+            if (!result) return BadRequest(new ProblemDetails { Title = "Problem updating basket with payment intent" });
+        }
 
         return basket.MapToDto();
     }
@@ -47,16 +40,16 @@ public class PaymentsController : BaseApiController
         var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
 
         var stripeEvent = EventUtility.ConstructEvent(json, Request.Headers["Stripe-Signature"],
-            _config["StripeSettings:WhSecret"]);
+            config["StripeSettings:WhSecret"]);
 
         var charge = (Charge)stripeEvent.Data.Object;
 
-        var order = await _context.Orders.FirstOrDefaultAsync(x =>
+        var order = await context.Orders.FirstOrDefaultAsync(x =>
             x.PaymentIntentId == charge.PaymentIntentId);
 
-        if (charge.Status == "succeeded") order.OrderStatus = OrderStatus.PaymentRecieved;
+        if (charge.Status == "succeeded") order?.OrderStatus = OrderStatus.PaymentRecieved;
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return new EmptyResult();
     }
