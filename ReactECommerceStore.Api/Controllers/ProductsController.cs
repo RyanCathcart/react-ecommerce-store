@@ -5,22 +5,12 @@ using ReactECommerceStore.Api.Extensions;
 
 namespace ReactECommerceStore.Api.Controllers;
 
-public class ProductsController : BaseApiController
+public class ProductsController(StoreContext context, IMapper mapper, ImageService imageService) : BaseApiController
 {
-    private readonly StoreContext _context;
-    private readonly IMapper _mapper;
-    private readonly ImageService _imageService;
-    public ProductsController(StoreContext context, IMapper mapper, ImageService imageService)
-    {
-        _imageService = imageService;
-        _mapper = mapper;
-        _context = context;
-    }
-
     [HttpGet]
     public async Task<ActionResult<PagedList<Product>>> GetProducts([FromQuery] ProductParams productParams)
     {
-        var query = _context.Products
+        var query = context.Products
             .Sort(productParams.OrderBy)
             .Search(productParams.SearchTerm)
             .Filter(productParams.Brands, productParams.Types)
@@ -36,7 +26,7 @@ public class ProductsController : BaseApiController
     [HttpGet("{id}")]
     public async Task<ActionResult<Product>> GetProduct(int id)
     {
-        var product = await _context.Products.FindAsync(id);
+        var product = await context.Products.FindAsync(id);
 
         if (product == null) return NotFound();
 
@@ -46,8 +36,8 @@ public class ProductsController : BaseApiController
     [HttpGet("filters")]
     public async Task<IActionResult> GetFilters()
     {
-        var brands = await _context.Products.Select(p => p.Brand).Distinct().ToListAsync();
-        var types = await _context.Products.Select(p => p.Type).Distinct().ToListAsync();
+        var brands = await context.Products.Select(p => p.Brand).Distinct().ToListAsync();
+        var types = await context.Products.Select(p => p.Type).Distinct().ToListAsync();
 
         return Ok(new { brands, types });
     }
@@ -56,11 +46,11 @@ public class ProductsController : BaseApiController
     [HttpPost]
     public async Task<ActionResult> CreateProduct([FromForm] CreateProductDto productDto)
     {
-        var product = _mapper.Map<Product>(productDto);
+        var product = mapper.Map<Product>(productDto);
 
         if (productDto.PictureFile != null)
         {
-            var imageResult = await _imageService.AddImageAsync(productDto.PictureFile);
+            var imageResult = await imageService.AddImageAsync(productDto.PictureFile);
 
             if (imageResult.Error != null)
                 return BadRequest(new ProblemDetails { Title = imageResult.Error.Message });
@@ -69,9 +59,9 @@ public class ProductsController : BaseApiController
             product.PublicId = imageResult.PublicId;
         }
 
-        _context.Products.Add(product);
+        context.Products.Add(product);
 
-        var result = await _context.SaveChangesAsync() > 0;
+        var result = await context.SaveChangesAsync() > 0;
 
         if (result) return CreatedAtRoute("GetProduct", new { Id = product.Id }, product);
 
@@ -82,27 +72,27 @@ public class ProductsController : BaseApiController
     [HttpPut]
     public async Task<ActionResult<Product>> UpdateProduct([FromForm] UpdateProductDto productDto)
     {
-        var product = await _context.Products.FindAsync(productDto.Id);
+        var product = await context.Products.FindAsync(productDto.Id);
 
         if (product == null) return NotFound();
 
-        _mapper.Map(productDto, product);
+        mapper.Map(productDto, product);
 
         if (productDto.PictureFile != null)
         {
-            var imageResult = await _imageService.AddImageAsync(productDto.PictureFile);
+            var imageResult = await imageService.AddImageAsync(productDto.PictureFile);
 
             if (imageResult.Error != null)
                 return BadRequest(new ProblemDetails { Title = imageResult.Error.Message });
 
             if (!string.IsNullOrEmpty(product.PublicId))
-                await _imageService.DeleteImageAsync(product.PublicId);
+                await imageService.DeleteImageAsync(product.PublicId);
 
             product.PictureUrl = imageResult.SecureUrl.ToString();
             product.PublicId = imageResult.PublicId;
         }
 
-        var result = await _context.SaveChangesAsync() > 0;
+        var result = await context.SaveChangesAsync() > 0;
 
         if (result) return Ok(product);
 
@@ -113,16 +103,16 @@ public class ProductsController : BaseApiController
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteProduct(int id)
     {
-        var product = await _context.Products.FindAsync(id);
+        var product = await context.Products.FindAsync(id);
 
         if (product == null) return NotFound();
 
         if (!string.IsNullOrEmpty(product.PublicId))
-            await _imageService.DeleteImageAsync(product.PublicId);
+            await imageService.DeleteImageAsync(product.PublicId);
 
-        _context.Products.Remove(product);
+        context.Products.Remove(product);
 
-        var result = await _context.SaveChangesAsync() > 0;
+        var result = await context.SaveChangesAsync() > 0;
 
         if (result) return Ok();
 

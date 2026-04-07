@@ -8,6 +8,7 @@ import BasketPage from "../../features/basket/BasketPage";
 import Catalog from "../../features/catalog/Catalog";
 import ProductDetails from "../../features/catalog/ProductDetails";
 import CheckoutPage from "../../features/checkout/CheckoutPage";
+import CheckoutSuccess from "../../features/checkout/CheckoutSuccess";
 import ContactPage from "../../features/contact/ContactPage";
 import HomePage from "../../features/home/HomePage";
 import Orders from "../../features/orders/Orders";
@@ -22,6 +23,9 @@ export const router = createBrowserRouter([
     children: [
       { element: <RequireAuth />, children: [
         { path: "checkout", element: <CheckoutPage /> },
+        { path: "checkout/success", element: <CheckoutSuccess /> },
+        { path: "orders", element: <Orders /> },
+        { path: "inventory", element: <InventoryPage /> }, // Need to restrict this route to allow only "Admin" role.
       ]},
       { path: "", element: <HomePage /> },
       { path: "catalog", element: <Catalog /> },
@@ -31,8 +35,6 @@ export const router = createBrowserRouter([
       { path: "server-error", element: <ServerError /> },
       { path: "not-found", element: <NotFound /> },
       { path: "basket", element: <BasketPage /> },
-      { path: "orders", element: <Orders /> },
-      { path: "inventory", element: <InventoryPage /> }, // Need to restrict this route to allow only "Admin" role.
       { path: "login", element: <LoginForm /> },
       { path: "register", element: <RegisterForm /> },
       { path: "*", element: <Navigate replace to="/not-found" /> },

@@ -1,4 +1,5 @@
 import { createApi, } from "@reduxjs/toolkit/query/react";
+import Cookies from "js-cookie";
 import { baseQueryWithErrorHandling } from "../../app/api/baseApi";
 import { type Basket, type BasketItem } from "../../app/models/basket";
 import type { Product } from "../../app/models/product";
@@ -16,13 +17,13 @@ export const basketApi = createApi({
       query: () => ({ url: "basket" }),
       providesTags: ["Basket"]
     }),
-    addBasketItem: builder.mutation<Basket, { product: Product | BasketItem, quantity: number }>({
+    addBasketItem: builder.mutation<Basket, { product: Product | BasketItem, quantity: number; }>({
       query: ({ product, quantity }) => {
         const productId = isBasketItem(product) ? product.productId : product.id;
         return {
           url: `basket?productId=${productId}&quantity=${quantity}`,
           method: "POST"
-        }
+        };
       },
       onQueryStarted: async ({ product, quantity }, { dispatch, queryFulfilled }) => {
         let isNewBasket = false;
@@ -51,7 +52,7 @@ export const basketApi = createApi({
         }
       }
     }),
-    removeBasketItem: builder.mutation<void, { productId: number, quantity: number }>({
+    removeBasketItem: builder.mutation<void, { productId: number, quantity: number; }>({
       query: ({ productId, quantity }) => ({
         url: `basket?productId=${productId}&quantity=${quantity}`,
         method: "DELETE"
@@ -76,8 +77,24 @@ export const basketApi = createApi({
           patchResult.undo();
         }
       }
+    }),
+    clearBasket: builder.mutation<void, void>({
+      queryFn: () => ({ data: undefined }),
+      onQueryStarted: async (_, { dispatch }) => {
+        dispatch(
+          basketApi.util.updateQueryData("fetchBasket", undefined, (draft) => {
+            draft.items = [];
+          })
+        );
+        Cookies.remove("basketId");
+      }
     })
   })
 });
 
-export const { useFetchBasketQuery, useAddBasketItemMutation, useRemoveBasketItemMutation } = basketApi;
+export const {
+  useFetchBasketQuery,
+  useAddBasketItemMutation,
+  useRemoveBasketItemMutation,
+  useClearBasketMutation
+} = basketApi;

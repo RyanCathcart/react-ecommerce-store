@@ -1,9 +1,8 @@
 export interface Basket {
-  id: number;
+  id: string;
   items: BasketItem[];
-  buyerId: string;
-  paymentIntentId?: string;
   clientSecret?: string;
+  paymentIntentId?: string;
 }
 
 export interface BasketItem {
