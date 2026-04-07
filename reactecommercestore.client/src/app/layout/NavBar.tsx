@@ -60,7 +60,7 @@ export default function NavBar() {
           sx={{
             display: { xs: "none", md: "flex" },
             justifyContent: "space-between",
-            flexGrow: 1,
+            flexGrow: 0,
           }}
         >
           <List sx={{ display: "flex" }}>
@@ -75,36 +75,36 @@ export default function NavBar() {
             {/*  </ListItem>*/}
             {/*)}*/}
           </List>
-          <Box display="flex" alignItems="center">
-            <IconButton
-              component={Link}
-              to="/basket"
-              size="large"
-              sx={{ color: "inherit" }}
-            >
-              <Badge badgeContent={itemCount} color="secondary">
-                <ShoppingCart />
-              </Badge>
-            </IconButton>
+        </Box>
+        <Box display="flex" alignItems="center">
+          <IconButton
+            component={Link}
+            to="/basket"
+            size="large"
+            sx={{ color: "inherit" }}
+          >
+            <Badge badgeContent={itemCount} color="secondary">
+              <ShoppingCart />
+            </Badge>
+          </IconButton>
 
-            {user ? (
-              <UserMenu user={user} />
-            ) : (
-              <List sx={{ display: "flex" }}>
-                {rightLinks.map(({ title, path }) => (
-                  <ListItem
-                    component={NavLink}
-                    to={path}
-                    key={path}
-                    sx={navStyles}
-                  >
-                    {title.toUpperCase()}
-                  </ListItem>
-                ))}
-              </List>
-            )}
+          {user ? (
+            <UserMenu user={user} />
+          ) : (
+            <List sx={{ display: "flex" }}>
+              {rightLinks.map(({ title, path }) => (
+                <ListItem
+                  component={NavLink}
+                  to={path}
+                  key={path}
+                  sx={navStyles}
+                >
+                  {title.toUpperCase()}
+                </ListItem>
+              ))}
+            </List>
+          )}
 
-          </Box>
         </Box>
         {/*<SmallScreenMenu midLinks={midLinks} rightLinks={rightLinks} />*/}
       </Toolbar>
