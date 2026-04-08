@@ -1,9 +1,9 @@
-namespace ReactECommerceStore.Api.Entities.OrderAggregate;
+﻿namespace ReactECommerceStore.Api.Entities.OrderAggregate;
 
 [Owned]
 public class ProductItemOrdered
 {
     public int ProductId { get; set; }
-    public string Name { get; set; }
-    public string PictureUrl { get; set; }
+    public required string Name { get; set; }
+    public required string PictureUrl { get; set; }
 }

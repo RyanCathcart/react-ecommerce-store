@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ReactECommerceStore.Api.Entities.OrderAggregate;
+﻿namespace ReactECommerceStore.Api.Entities.OrderAggregate;
 
 public class Order
 {
@@ -11,11 +9,13 @@ public class Order
     public List<OrderItem> OrderItems { get; set; } = [];
     public long Subtotal { get; set; }
     public long DeliveryFee { get; set; }
-    public OrderStatus OrderStatus { get; set; } = OrderStatus.Pending;
+    public long Discount { get; set; }
     public required string PaymentIntentId { get; set; }
+    public OrderStatus OrderStatus { get; set; } = OrderStatus.Pending;
+    public required PaymentSummary PaymentSummary { get; set; }
 
     public long GetTotal()
     {
-        return Subtotal + DeliveryFee;
+        return Subtotal + DeliveryFee - Discount;
     }
 }

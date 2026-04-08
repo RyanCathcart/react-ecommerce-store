@@ -11,6 +11,8 @@ public class OrderDto
     public List<OrderItemDto> OrderItems { get; set; } = [];
     public long Subtotal { get; set; }
     public long DeliveryFee { get; set; }
-    public required string OrderStatus { get; set; }
+    public long Discount { get; set; }
     public long Total { get; set; }
+    public required string OrderStatus { get; set; }
+    public required PaymentSummary PaymentSummary { get; set; }
 }
