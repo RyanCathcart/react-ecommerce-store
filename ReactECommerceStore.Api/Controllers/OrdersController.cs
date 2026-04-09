@@ -49,29 +49,21 @@ public class OrdersController(StoreContext context) : BaseApiController
         var subtotal = items.Sum(item => item.Price * item.Quantity);
         var deliveryFee = CalculateDeliveryFee(subtotal);
 
-        var order = await context.Orders
-            .Include(o => o.OrderItems)
-            .FirstOrDefaultAsync(o => o.PaymentIntentId == basket.PaymentIntentId);
-
-        if (order == null)
+        var order = new Order
         {
-            order = new Order
-            {
-                BuyerEmail = User.GetUsername(),
-                ShippingAddress = orderDto.ShippingAddress,
-                OrderItems = items,
-                Subtotal = subtotal,
-                DeliveryFee = deliveryFee,
-                PaymentIntentId = basket.PaymentIntentId,
-                PaymentSummary = orderDto.PaymentSummary
-            };
+            BuyerEmail = User.GetUsername(),
+            ShippingAddress = orderDto.ShippingAddress,
+            OrderItems = items,
+            Subtotal = subtotal,
+            DeliveryFee = deliveryFee,
+            PaymentIntentId = basket.PaymentIntentId,
+            PaymentSummary = orderDto.PaymentSummary
+        };
 
-            context.Orders.Add(order);
-        }
-        else
-        {
-            order.OrderItems = items;
-        }
+        context.Orders.Add(order);
+
+        context.Baskets.Remove(basket);
+        Response.Cookies.Delete("basketId");
 
         var result = await context.SaveChangesAsync() > 0;
 
