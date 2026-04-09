@@ -1,8 +1,9 @@
-namespace ReactECommerceStore.Api.Entities.OrderAggregate;
+﻿namespace ReactECommerceStore.Api.Entities.OrderAggregate;
 
 public enum OrderStatus
 {
     Pending,
     PaymentRecieved,
-    PaymentFailed
+    PaymentFailed,
+    PaymentMismatch
 }
