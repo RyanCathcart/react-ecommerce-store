@@ -11,7 +11,8 @@ import CheckoutPage from "../../features/checkout/CheckoutPage";
 import CheckoutSuccess from "../../features/checkout/CheckoutSuccess";
 import ContactPage from "../../features/contact/ContactPage";
 import HomePage from "../../features/home/HomePage";
-import Orders from "../../features/orders/Orders";
+import OrderDetails from "../../features/orders/OrderDetails";
+import OrdersPage from "../../features/orders/OrdersPage";
 import NotFound from "../errors/NotFound";
 import ServerError from "../errors/ServerError";
 import RequireAuth from "./RequireAuth";
@@ -24,7 +25,8 @@ export const router = createBrowserRouter([
       { element: <RequireAuth />, children: [
         { path: "checkout", element: <CheckoutPage /> },
         { path: "checkout/success", element: <CheckoutSuccess /> },
-        { path: "orders", element: <Orders /> },
+        { path: "orders", element: <OrdersPage /> },
+        { path: "orders/:id", element: <OrderDetails /> },
         { path: "inventory", element: <InventoryPage /> }, // Need to restrict this route to allow only "Admin" role.
       ]},
       { path: "", element: <HomePage /> },

@@ -1,8 +1,4 @@
-export function getCookie(key: string) {
-  const b = document.cookie.match("(^|;)\\s*" + key + "\\s*=\\s*([^;]+)");
-  return b ? b.pop() : "";
-}
-
+import type { PaymentSummary, ShippingAddress } from "../models/order";
 
 /**
  * Converts given amount in long form (64 bit integer) to standard US currency format.
@@ -39,4 +35,12 @@ export function filterEmptyValues(values: object) {
       ([, value]) => value != null && value.length !== 0
     )
   );
+}
+
+export function formatOrderAddressString(address: ShippingAddress) {
+  return `${address?.name}, ${address?.line1}, ${address?.city}, ${address?.state}, ${address?.postal_code}, ${address?.country}`;
+}
+
+export function formatOrderPaymentString(card: PaymentSummary) {
+  return `${card?.brand?.toUpperCase()}, **** **** **** ${card?.last4}, Exp: ${card?.exp_month}/${card?.exp_year}`;
 }

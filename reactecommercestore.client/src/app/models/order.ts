@@ -1,10 +1,24 @@
-export interface ShippingAddress {
-  fullName: string;
-  address1: string;
-  address2: string;
+export interface Order {
+  id: number;
+  buyerEmail: string;
+  shippingAddress: ShippingAddress;
+  orderDate: string;
+  orderItems: OrderItem[];
+  subtotal: number;
+  deliveryFee: number;
+  discount: number;
+  total: number;
+  orderStatus: string;
+  paymentSummary: PaymentSummary;
+}
+
+export type ShippingAddress = {
+  name: string;
+  line1: string;
+  line2?: string | null;
   city: string;
   state: string;
-  zip: string;
+  postal_code: string;
   country: string;
 }
 
@@ -16,14 +30,14 @@ export interface OrderItem {
   quantity: number;
 }
 
-export interface Order {
-  id: number;
-  buyerId: string;
+export interface PaymentSummary {
+  last4: number | string;
+  brand: string;
+  exp_month: number;
+  exp_year: number;
+}
+
+export interface CreateOrder {
   shippingAddress: ShippingAddress;
-  orderDate: string;
-  orderItems: OrderItem[];
-  subtotal: number;
-  deliveryFee: number;
-  orderStatus: string;
-  total: number;
+  paymentSummary: PaymentSummary;
 }
