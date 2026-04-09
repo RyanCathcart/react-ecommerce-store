@@ -38,32 +38,40 @@ public class OrdersController(StoreContext context) : BaseApiController
         var basket = await context.Baskets
             .GetBasketWithItems(Request.Cookies["basketId"]);
 
-        if (basket == null || basket.Items.Count == 0 || string.IsNullOrEmpty(basket.PaymentIntentId)) 
+        if (basket == null || basket.Items.Count == 0 || string.IsNullOrEmpty(basket.PaymentIntentId))
             return BadRequest(new ProblemDetails { Title = "Basket is empty or not found." });
 
         var items = CreateOrderItems(basket.Items);
-        
-        if (items == null) 
+
+        if (items == null)
             return BadRequest(new ProblemDetails { Title = "One or more items in the basket are out of stock." });
 
         var subtotal = items.Sum(item => item.Price * item.Quantity);
         var deliveryFee = CalculateDeliveryFee(subtotal);
 
-        var order = new Order
+        var order = await context.Orders
+            .Include(o => o.OrderItems)
+            .FirstOrDefaultAsync(o => o.PaymentIntentId == basket.PaymentIntentId);
+
+        if (order == null)
         {
-            BuyerEmail = User.GetUsername(),
-            ShippingAddress = orderDto.ShippingAddress,
-            OrderItems = items,
-            Subtotal = subtotal,
-            DeliveryFee = deliveryFee,
-            PaymentIntentId = basket.PaymentIntentId,
-            PaymentSummary = orderDto.PaymentSummary
-        };
+            order = new Order
+            {
+                BuyerEmail = User.GetUsername(),
+                ShippingAddress = orderDto.ShippingAddress,
+                OrderItems = items,
+                Subtotal = subtotal,
+                DeliveryFee = deliveryFee,
+                PaymentIntentId = basket.PaymentIntentId,
+                PaymentSummary = orderDto.PaymentSummary
+            };
 
-        context.Orders.Add(order);
-
-        context.Baskets.Remove(basket);
-        Response.Cookies.Delete("basketId");
+            context.Orders.Add(order);
+        }
+        else
+        {
+            order.OrderItems = items;
+        }
 
         var result = await context.SaveChangesAsync() > 0;
 
